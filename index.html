@@ -39,6 +39,7 @@ header{position:sticky; top:0; z-index:50; background:linear-gradient(180deg,#f5
 .brand .ball::after{top:50%;left:0;right:0;height:1.5px;transform:translateY(-50%);}
 .brand h1{font-size:17px; margin:0; font-weight:700; letter-spacing:0.06em;}
 .brand h1 span{color:var(--orange);}
+.brand .ver{font-size:10px; color:var(--text-dim2); font-family:'JetBrains Mono'; align-self:flex-end; padding-bottom:2px;}
 nav.tabs{display:flex; gap:6px; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:4px;}
 nav.tabs button{border:none; background:transparent; color:var(--text-dim); font-family:'Inter'; font-weight:600; font-size:12.5px;
   padding:8px 14px; border-radius:999px; cursor:pointer; transition:.15s;}
@@ -209,7 +210,7 @@ tbody tr:hover{background:rgba(0,0,0,.03);}
 </head>
 <body>
 <header>
-  <div class="brand"><div class="ball"></div><h1>COURT<span>STATS</span></h1></div>
+  <div class="brand"><div class="ball"></div><h1>COURT<span>STATS</span></h1><span class="ver">v3.1</span></div>
   <nav class="tabs" id="mainTabs"></nav>
 </header>
 <main id="app"></main>
@@ -727,14 +728,30 @@ function renderGamesView(app){
           <div class="opp">vs ${escapeHtml(g.opponent)}</div>
           <div class="date">${g.date || ''}</div>
         </div>
-        <span class="badge ${g.status==='live'?'live':'done'}">${g.status==='live'?'進行中':'終了'}</span>
+        <span style="display:flex; align-items:center; gap:8px;">
+          <span class="badge ${g.status==='live'?'live':'done'}">${g.status==='live'?'進行中':'終了'}</span>
+          <button class="btn btn-danger btn-sm" data-del-game="${g.id}">削除</button>
+        </span>
       `;
-      el.onclick = async ()=>{
+      el.onclick = async (ev)=>{
+        if(ev.target.closest('[data-del-game]')) return; // 削除ボタンは別処理
         state.currentGameId = g.id;
         await persistCurrentGameId();
         resetGameUiState();
         state.view='live'; state.liveTab = g.status==='finished' ? 'box' : 'input';
         renderTabs(); render();
+      };
+      el.querySelector('[data-del-game]').onclick = async (ev)=>{
+        ev.stopPropagation();
+        if(!(await askConfirm(`「vs ${g.opponent}（${g.date||''}）」を削除しますか？この試合のスタッツ記録はすべて失われます。心配な場合は先に「データを書き出す」でバックアップを取ってください。`))) return;
+        state.games = state.games.filter(x=>x.id!==g.id);
+        if(state.currentGameId===g.id){
+          state.currentGameId = null;
+          await persistCurrentGameId();
+        }
+        await persistGames();
+        showToast('試合を削除しました');
+        render();
       };
       gl.appendChild(el);
     });
