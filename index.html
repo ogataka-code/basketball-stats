@@ -91,23 +91,25 @@ input:focus,select:focus{border-color:var(--orange);}
 .stat-btn.big{padding:24px 8px; font-size:19px; font-weight:800;}
 /* 左:自チーム / 中央:コート / 右:相手 の縦積みレイアウト
    画面幅に応じて選手ボタンの列幅を伸縮させ、余白を埋める */
-.court-layout{display:grid; grid-template-columns:minmax(70px,130px) 1fr minmax(70px,130px); gap:10px; align-items:start; margin-top:6px;}
-.team-col{display:flex; flex-direction:column; gap:8px;}
-.team-col-label{font-size:11px; color:var(--text-dim2); font-weight:700; text-align:center; margin-bottom:2px;}
+.court-layout{display:grid; grid-template-columns:minmax(96px,150px) 1fr minmax(96px,150px); gap:8px; align-items:start; margin-top:4px;}
+.team-col{display:flex; flex-direction:column; gap:6px;}
+.team-col-label{font-size:11px; color:var(--text-dim2); font-weight:700; text-align:center; margin-bottom:1px;}
 .court-center{min-width:0;}
-.vchip{background:var(--panel-2); border:2px solid var(--line); border-radius:12px; padding:12px 4px 10px; text-align:center; cursor:pointer; transition:.12s; user-select:none; min-height:64px;}
-.vchip:active{transform:scale(0.94);}
-.vchip .num{font-family:'JetBrains Mono'; font-weight:700; font-size:32px; line-height:1.05;}
-.vchip .nm{font-size:11px; color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:3px;}
-.vchip .sub{font-size:11px; color:var(--amber); font-family:'JetBrains Mono'; margin-top:3px;}
-.vchip .sub .pf{color:var(--red); font-weight:700;}
-.vchip.oncourt{border-color:rgba(31,157,107,.6);}
-.vchip.oncourt .num{color:var(--green);}
-.vchip.selected{border-color:var(--orange); background:rgba(255,106,26,.12);}
-.vchip.opp .num{color:var(--text);}
-.vchip.opp.oncourt .num{color:var(--green);}
-.vchip.opp.selected{border-color:var(--orange); background:rgba(255,106,26,.12);}
-.vchip.opp.selected .num{color:var(--orange);}
+/* 選手チップ: 左=背番号(大)+名前(小) / 右=得点+ファウル数。文字はすべて黒で統一 */
+.vchip{display:flex; align-items:center; justify-content:space-between; gap:6px;
+  background:var(--panel); border:2px solid var(--line); border-radius:12px; padding:8px 10px; cursor:pointer; transition:.12s; user-select:none; min-height:60px;}
+.vchip:active{transform:scale(0.96);}
+.vchip .vleft{min-width:0; text-align:center;}
+.vchip .num{font-family:'JetBrains Mono'; font-weight:700; font-size:30px; line-height:1; color:var(--text);}
+.vchip .nm{font-size:10.5px; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:2px; max-width:72px;}
+.vchip .vright{text-align:right; flex:none;}
+.vchip .vpts{font-family:'JetBrains Mono'; font-size:13px; font-weight:700; color:var(--text);}
+.vchip .vpf{font-family:'JetBrains Mono'; font-size:12px; color:var(--text); margin-top:3px;}
+.vchip.selected{border-color:var(--text); border-width:2.5px; background:var(--panel-2);}
+/* 直前のプレー表示バー */
+.lastplay-bar{background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:9px 14px; font-size:13px; margin-bottom:6px; color:var(--text);}
+.lastplay-bar.dim{color:var(--text-dim); border-style:dashed;}
+.lastplay-bar small{color:var(--text-dim);}
 /* シュートチャート */
 .chart-chips{display:flex; gap:6px; flex-wrap:wrap;}
 .chart-chip{border:1px solid var(--line); background:var(--panel-2); color:var(--text-dim); font-size:12px; font-weight:600;
@@ -185,6 +187,9 @@ input:focus,select:focus{border-color:var(--orange);}
 .stat-section-title{font-size:11px; color:var(--text-dim2); text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin:14px 0 8px;}
 .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
 .stat-grid.five{grid-template-columns:1fr 1fr 1fr;}
+.stat-grid.four{grid-template-columns:repeat(4,1fr); gap:6px; margin-top:8px;}
+.stat-grid.four .stat-btn{padding:12px 4px; font-size:13px; min-height:52px;}
+.stat-grid.three{grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:8px;}
 .stat-btn{border:none; border-radius:11px; padding:14px 8px; font-weight:700; font-size:13.5px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; transition:.1s;}
 .stat-btn:active{transform:scale(0.94);}
 .stat-btn.make{background:rgba(55,201,143,.14); color:var(--green); border:1.5px solid rgba(55,201,143,.4);}
@@ -226,7 +231,7 @@ tbody tr:hover{background:rgba(0,0,0,.03);}
       <rect x="12.2" y="11" width="3.6" height="11" rx="1.2" fill="#9aa1ac"/>
       <rect x="18.4" y="6" width="3.6" height="16" rx="1.2" fill="#ff6a1a"/>
     </svg>
-    <h1>STATS<span>APP</span></h1><span class="ver">v4.2</span>
+    <h1>STATS<span>APP</span></h1><span class="ver">v4.4</span>
   </div>
   <nav class="tabs" id="mainTabs"></nav>
 </header>
@@ -272,6 +277,7 @@ let state = {
   selectedPlayerId: null,
   selectedOppPlayerId: null,
   pendingShot: null,
+  pendingFt: false,
   liveTab: 'input', // 'input' | 'box' | 'chart'
   chartSide: 'own', // シュートチャートの表示チーム
   chartOwnId: null, // シュートチャートで絞り込む自チーム選手
@@ -287,6 +293,7 @@ function resetGameUiState(){
   state.selectedPlayerId = null;
   state.selectedOppPlayerId = null;
   state.pendingShot = null;
+  state.pendingFt = false;
   state.chartSide = 'own';
   state.chartOwnId = null;
   state.chartOppId = null;
@@ -832,14 +839,16 @@ function renderGamesView(app){
           ${oppOptions}
           <option value="__free__">（未登録の相手 / 名前を直接入力）</option>
         </select>
-        <input type="number" id="quarterLen" placeholder="1Q(分)" value="10" style="max-width:90px;">
       </div>
       <div class="row" id="freeOppRow" style="display:none;">
         <input type="text" id="oppName" placeholder="対戦相手の名前">
       </div>
-      <div class="hint" style="margin-bottom:10px;">出場する選手を選択してください（${escapeHtml((mainTeam()||{}).name||'自チーム')}）</div>
-      <div class="pick-grid" id="pickGrid"></div>
-      <button class="btn btn-primary btn-block" id="startGameBtn" style="margin-top:12px;">試合を開始する</button>
+      <div class="row" style="align-items:center;">
+        <label style="font-size:13px; color:var(--text-dim); font-weight:600;">1クォーターの時間</label>
+        <input type="number" id="quarterLen" value="10" style="max-width:80px;"><span style="font-size:13px; color:var(--text-dim);">分</span>
+      </div>
+      <div class="hint" style="margin:8px 0;">${escapeHtml((mainTeam()||{}).name||'自チーム')}の登録選手が全員この試合に追加されます。コートに出す5人は試合中に「メンバーチェンジ」で選べます。</div>
+      <button class="btn btn-primary btn-block" id="startGameBtn" style="margin-top:8px;">試合を開始する</button>
     </div>
     <div class="card">
       <h2>試合履歴</h2>
@@ -856,31 +865,17 @@ function renderGamesView(app){
     </div>
   `;
   document.getElementById('gameDate').valueAsDate = new Date();
-  const grid = document.getElementById('pickGrid');
-  if(state.roster.length===0){
-    grid.innerHTML = '<div class="empty">先に「選手管理」から選手を登録してください</div>';
-  } else {
-    const picked = new Set();
-    state.roster.slice().sort((a,b)=>a.number-b.number).forEach(p=>{
-      const it = document.createElement('label');
-      it.className = 'pick-item';
-      it.innerHTML = `<input type="checkbox" value="${p.id}"><span>#${p.number} ${escapeHtml(p.name)}</span>`;
-      const cb = it.querySelector('input');
-      cb.onchange = ()=>{ it.classList.toggle('on', cb.checked); };
-      grid.appendChild(it);
-    });
-  }
   // 対戦チーム選択で「未登録の相手」を選んだときだけ自由入力欄を表示
   const oppSelect = document.getElementById('oppTeamSelect');
   const freeOppRow = document.getElementById('freeOppRow');
   oppSelect.onchange = ()=>{ freeOppRow.style.display = oppSelect.value==='__free__' ? '' : 'none'; };
 
   document.getElementById('startGameBtn').onclick = async ()=>{
+    const mt = mainTeam();
+    if(!mt || mt.players.length===0){ showToast('先に「チーム管理」で自チームの選手を登録してください'); return; }
     const title = document.getElementById('gameTitle').value.trim();
     const date = document.getElementById('gameDate').value;
     const qLenMin = parseFloat(document.getElementById('quarterLen').value) || 10;
-    const checked = Array.from(grid.querySelectorAll('input:checked')).map(c=>c.value);
-    if(checked.length===0){ showToast('選手を1人以上選んでください'); return; }
 
     // 対戦相手: 登録チームから選択 or 自由入力
     const sel = oppSelect.value;
@@ -891,7 +886,6 @@ function renderGamesView(app){
       const t = state.teams.find(x=>x.id===sel);
       if(t){
         opp = t.name;
-        // チームの選手をこの試合用にコピー（スタッツは試合ごとに独立）
         t.players.forEach(p=>{
           oppPlayers.push({id:p.id, number:p.number, name:p.name, onCourt:false});
           oppPlayerStats[p.id] = emptyTeamStats();
@@ -903,12 +897,14 @@ function renderGamesView(app){
       showToast('対戦チームを選択してください'); return;
     }
 
+    // 自チームの登録選手を全員この試合に追加
+    const playerIds = mt.players.map(p=>p.id);
     const stats = {};
-    checked.forEach(pid=> stats[pid] = emptyStats());
+    playerIds.forEach(pid=> stats[pid] = emptyStats());
     const quarterLengthSec = Math.round(qLenMin*60);
     const game = { id:uid(), title, opponent:opp, oppTeamId:(sel&&sel!=='__free__')?sel:null,
-      teamName:(mainTeam()||{}).name||'自チーム',
-      date, playerIds:checked, stats, status:'live', log:[], opponentScore:0,
+      teamName:mt.name||'自チーム',
+      date, playerIds, stats, status:'live', log:[], opponentScore:0,
       oppStats:emptyTeamStats(), oppPlayers, oppPlayerStats, _oppMigrated:true,
       timeouts:{own:0, opp:0},
       quarterLengthSec, clock:{quarter:1, seconds:quarterLengthSec, running:false},
@@ -1180,9 +1176,9 @@ function renderLiveView(app){
   `;
   document.getElementById('backBtn').onclick = ()=>{ state.view='games'; renderTabs(); render(); };
   document.getElementById('vtCourt').onclick = ()=>{ state.liveTab='input'; render(); };
-  document.getElementById('vtBox').onclick = ()=>{ state.liveTab='box'; state.pendingShot=null; render(); };
-  document.getElementById('vtChart').onclick = ()=>{ state.liveTab='chart'; state.pendingShot=null; render(); };
-  document.getElementById('vtLog').onclick = ()=>{ state.liveTab='log'; state.pendingShot=null; render(); };
+  document.getElementById('vtBox').onclick = ()=>{ state.liveTab='box'; state.pendingShot=null; state.pendingFt=false; render(); };
+  document.getElementById('vtChart').onclick = ()=>{ state.liveTab='chart'; state.pendingShot=null; state.pendingFt=false; render(); };
+  document.getElementById('vtLog').onclick = ()=>{ state.liveTab='log'; state.pendingShot=null; state.pendingFt=false; render(); };
   document.getElementById('qPrev').onclick = async ()=>{
     if(g.clock.quarter<=1) return;
     if(g.clock.running || g.clock.seconds !== g.quarterLengthSec){
@@ -1204,6 +1200,13 @@ function renderLiveView(app){
   if(clockBtn && g.status==='live'){
     clockBtn.onclick = async ()=>{
       g.clock.running = !g.clock.running;
+      // 初めてクロックを動かしたとき、コート上の選手をスタメンとして記録
+      if(g.clock.running && !g.starters){
+        g.starters = {
+          own: g.playerIds.filter(pid=>g.stats[pid].onCourt),
+          opp: (g.oppPlayers||[]).filter(p=>p.onCourt).map(p=>p.id)
+        };
+      }
       await persistGames();
       render();
     };
@@ -1284,10 +1287,9 @@ function renderCourtInput(body, g){
     const s = g.stats[p.id];
     const isSel = selP && selP.id===p.id;
     const pf = s.pf||0;
-    return `<div class="vchip oncourt ${isSel?'selected':''}" data-own-chip="${p.id}">
-      <div class="num">${p.number}</div>
-      <div class="nm">${escapeHtml(p.name)}</div>
-      <div class="sub">${pts(s)}点${pf?` <span class="pf ${pf>=5?'out':pf>=4?'warn':''}">F${pf}</span>`:''}</div>
+    return `<div class="vchip ${isSel?'selected':''}" data-own-chip="${p.id}">
+      <div class="vleft"><div class="num">${p.number}</div><div class="nm">${escapeHtml(p.name)}</div></div>
+      <div class="vright"><div class="vpts">${pts(s)}点</div><div class="vpf">F${pf}</div></div>
     </div>`;
   }).join('');
 
@@ -1295,42 +1297,57 @@ function renderCourtInput(body, g){
     const s = g.oppPlayerStats[p.id] || emptyTeamStats();
     const isSel = selOpp && selOpp.id===p.id;
     const pf = s.pf||0;
-    return `<div class="vchip opp oncourt ${isSel?'selected':''}" data-opp-chip="${p.id}">
-      <div class="num">${escapeHtml(String(p.number))}</div>
-      <div class="nm">${escapeHtml(p.name||'')}</div>
-      <div class="sub">${pts(s)}点${pf?` <span class="pf ${pf>=5?'out':pf>=4?'warn':''}">F${pf}</span>`:''}</div>
+    return `<div class="vchip ${isSel?'selected':''}" data-opp-chip="${p.id}">
+      <div class="vleft"><div class="num">${escapeHtml(String(p.number))}</div><div class="nm">${escapeHtml(p.name||'')}</div></div>
+      <div class="vright"><div class="vpts">${pts(s)}点</div><div class="vpf">F${pf}</div></div>
     </div>`;
   }).join('');
 
-  // 選択バー
+  // 直前に入力したプレーを表示
   let barHtml;
-  if(selP){
-    barHtml = `<div class="selected-bar"><span class="sname">#${selP.number} ${escapeHtml(selP.name)} を記録中</span><span>${pts(g.stats[selP.id])} 点</span></div>`;
-  } else if(selOpp){
-    const s = g.oppPlayerStats[selOpp.id] || emptyTeamStats();
-    barHtml = `<div class="selected-bar oppbar"><span class="sname">相手 #${escapeHtml(String(selOpp.number))} ${escapeHtml(selOpp.name||'')} を記録中</span><span>${pts(s)} 点</span></div>`;
+  const lastE = (g.log||[])[g.log.length-1];
+  if(lastE){
+    const d = describeEntry(g, lastE);
+    barHtml = `<div class="lastplay-bar">直前のプレー: <b>${d.name!=='—'?escapeHtml(d.name)+' ':''}${escapeHtml(d.label)}</b> <small>(${escapeHtml(d.teamName)})</small></div>`;
   } else {
-    barHtml = `<div class="selected-bar none"><span>選手をタップして選択してください</span></div>`;
+    barHtml = `<div class="lastplay-bar dim">選手をタップして選択 → コートやボタンで記録</div>`;
   }
 
-  // シュート位置タップ後：成功/失敗ボタンのみ（案内バーなし、P表記）
-  let pendingHtml = '';
+  // アクションエリア: シュート待ち / フリースロー待ち / 通常のボタン群 を同じ場所に表示
+  let actionHtml;
   if(state.pendingShot){
     const label = state.pendingShot.isThree ? '3P' : '2P';
-    pendingHtml = `
-      <div class="stat-grid" style="margin-top:10px;">
+    actionHtml = `
+      <div class="stat-grid three">
         <button class="stat-btn make big" id="shotMake">${label} 成功</button>
         <button class="stat-btn miss big" id="shotMiss">${label} 失敗</button>
-      </div>
-      <div class="util-row" style="margin-top:8px;">
-        <button class="btn btn-ghost btn-block btn-sm" id="shotCancel">位置を選び直す</button>
+        <button class="stat-btn neutral big" id="shotCancel">選び直す</button>
+      </div>`;
+  } else if(state.pendingFt){
+    actionHtml = `
+      <div class="stat-grid three">
+        <button class="stat-btn make big" id="ftMake">成功 <small>+1点</small></button>
+        <button class="stat-btn miss big" id="ftMiss">失敗</button>
+        <button class="stat-btn neutral big" id="ftCancelBtn">キャンセル</button>
+      </div>`;
+  } else {
+    actionHtml = `
+      <div class="stat-grid four">
+        <button class="stat-btn make" data-ftstart ${canRecord?'':'disabled'}>フリースロー</button>
+        <button class="stat-btn neutral" data-anystat="oreb" ${canRecord?'':'disabled'}>オフェンス<br>リバウンド</button>
+        <button class="stat-btn neutral" data-anystat="dreb" ${canRecord?'':'disabled'}>ディフェンス<br>リバウンド</button>
+        <button class="stat-btn neutral" data-anystat="ast" ${canRecord?'':'disabled'}>アシスト</button>
+        <button class="stat-btn neutral" data-anystat="stl" ${canRecord?'':'disabled'}>スティール</button>
+        <button class="stat-btn neutral" data-anystat="blk" ${canRecord?'':'disabled'}>ブロック</button>
+        <button class="stat-btn miss" data-anystat="tov" ${canRecord?'':'disabled'}>ターン<br>オーバー</button>
+        <button class="stat-btn miss" data-anystat="pf" ${canRecord?'':'disabled'}>ファウル</button>
       </div>`;
   }
 
   body.innerHTML = `
-    <div class="util-row" style="margin-bottom:10px;">
-      <button class="btn btn-ghost" id="subModalBtn" style="flex:1;">🔄 メンバーチェンジ</button>
-      <button class="btn btn-ghost" id="undoBtn" style="flex:1;" ${g.log.length===0?'disabled':''}>↩ 元に戻す</button>
+    <div class="util-row" style="margin-bottom:6px;">
+      <button class="btn btn-ghost btn-sm" id="subModalBtn" style="flex:1;">🔄 メンバーチェンジ</button>
+      <button class="btn btn-ghost btn-sm" id="undoBtn" style="flex:1;" ${g.log.length===0?'disabled':''}>↩ 元に戻す</button>
     </div>
     ${barHtml}
     <div class="court-layout">
@@ -1340,28 +1357,13 @@ function renderCourtInput(body, g){
       </div>
       <div class="court-center">
         <div class="court-wrap">${buildCourtSvg([], state.pendingShot)}</div>
-        ${pendingHtml}
       </div>
       <div class="team-col">
         <div class="team-col-label">相手</div>
         ${oppChips || '<div class="empty" style="font-size:10px; padding:6px;">メンバーチェンジで相手を入れてください</div>'}
       </div>
     </div>
-    <div class="stat-section-title">フリースロー</div>
-    <div class="stat-grid">
-      <button class="stat-btn make" data-anystat="ftM" ${canRecord?'':'disabled'}>フリースロー 成功 <small>+1点</small></button>
-      <button class="stat-btn miss" data-anystat="ftA" ${canRecord?'':'disabled'}>フリースロー 失敗</button>
-    </div>
-    <div class="stat-section-title">リバウンド・その他</div>
-    <div class="stat-grid five">
-      <button class="stat-btn neutral" data-anystat="oreb" ${canRecord?'':'disabled'}>オフェンス<br>リバウンド</button>
-      <button class="stat-btn neutral" data-anystat="dreb" ${canRecord?'':'disabled'}>ディフェンス<br>リバウンド</button>
-      <button class="stat-btn neutral" data-anystat="ast" ${canRecord?'':'disabled'}>アシスト</button>
-      <button class="stat-btn neutral" data-anystat="stl" ${canRecord?'':'disabled'}>スティール</button>
-      <button class="stat-btn neutral" data-anystat="blk" ${canRecord?'':'disabled'}>ブロック</button>
-      <button class="stat-btn miss" data-anystat="tov" ${canRecord?'':'disabled'}>ターン<br>オーバー</button>
-      <button class="stat-btn miss" data-anystat="pf" ${canRecord?'':'disabled'}>ファウル</button>
-    </div>
+    ${actionHtml}
   `;
 
   document.getElementById('subModalBtn').onclick = ()=> openSubModal(g);
@@ -1414,12 +1416,37 @@ function renderCourtInput(body, g){
       else if(selOpp) recordShotOpp(g, selOpp.id, p.x, p.y, p.isThree, made);
       showToast((p.isThree?'3点':'2点')+(made?' 成功':' 失敗')+' 記録');
       state.pendingShot = null;
+  state.pendingFt = false;
       await persistGames();
       render();
     };
     const mk = document.getElementById('shotMake'); if(mk) mk.onclick = ()=> finishShot(true);
     const ms = document.getElementById('shotMiss'); if(ms) ms.onclick = ()=> finishShot(false);
     const cn = document.getElementById('shotCancel'); if(cn) cn.onclick = ()=>{ state.pendingShot=null; render(); };
+  }
+
+  // フリースロー: 「フリースロー」→「成功/失敗」の2段階
+  const ftStartBtn = body.querySelector('[data-ftstart]');
+  if(ftStartBtn && canRecord){
+    ftStartBtn.onclick = ()=>{ state.pendingFt = true; render(); };
+  }
+  if(state.pendingFt){
+    const finishFt = async (made)=>{
+      const key = made ? 'ftM' : 'ftA';
+      let e, toastMsg;
+      if(selP){ e = makeEntry(g, {playerId:selP.id, key}); toastMsg = 'フリースロー'+(made?'成功':'失敗')+' 記録'; }
+      else if(selOpp){ e = makeEntry(g, {oppPlayerId:selOpp.id, oppKey:key}); toastMsg = '相手#'+selOpp.number+': フリースロー'+(made?'成功':'失敗'); }
+      else { state.pendingFt = false; render(); return; }
+      applyLogEntry(g, e, +1);
+      g.log.push(e);
+      state.pendingFt = false;
+      await persistGames();
+      showToast(toastMsg);
+      render();
+    };
+    const fm = document.getElementById('ftMake'); if(fm) fm.onclick = ()=> finishFt(true);
+    const ff = document.getElementById('ftMiss'); if(ff) ff.onclick = ()=> finishFt(false);
+    const fc = document.getElementById('ftCancelBtn'); if(fc) fc.onclick = ()=>{ state.pendingFt=false; render(); };
   }
 
   // FT・リバウンド等のボタン（自チーム/相手 共通）
@@ -1520,7 +1547,7 @@ function buildCourtSvg(shots, pending){
   /* 12単位=1m。ペイント: 幅4.9m(70.6〜129.4)×長さ5.8m(y10〜79.6)。FTサークル r1.8m=21.6。
      3P: 半径6.75m=81(頂点y=110)でFTサークル下端(101.2)と重ならない */
   return `
-  <svg id="courtSvg" viewBox="0 0 200 188" style="width:100%; max-width:600px; display:block; margin:0 auto; touch-action:manipulation; background:var(--panel-2); border-radius:8px;">
+  <svg id="courtSvg" viewBox="0 0 200 188" style="width:100%; max-width:460px; display:block; margin:0 auto; touch-action:manipulation; background:var(--panel-2); border-radius:8px;">
     <rect x="10" y="10" width="180" height="168" fill="none" stroke="var(--line)" stroke-width="2"/>
     <rect x="70.6" y="10" width="58.8" height="69.6" fill="none" stroke="var(--line)" stroke-width="1.5"/>
     <path d="M 78.4 79.6 A 21.6 21.6 0 0 0 121.6 79.6" fill="none" stroke="var(--line)" stroke-width="1.5"/>
@@ -1786,10 +1813,25 @@ function renderShotChart(body, g){
     return side==='own' ? sh.playerId===filterId : sh.oppPlayerId===filterId;
   });
 
-  // 集計
-  const made = shots.filter(s=>s.made).length;
-  const att = shots.length;
-  const fgPct = att>0 ? Math.round(made/att*1000)/10 : 0;
+  // 集計はスタッツ本体から行う（ボタン記録のFTも含めて正確に集計するため）
+  const statsList = side==='own'
+    ? (filterId ? [g.stats[filterId]].filter(Boolean) : players.map(p=>g.stats[p.id]))
+    : (filterId ? [g.oppPlayerStats[filterId]].filter(Boolean) : oppSorted.map(p=>g.oppPlayerStats[p.id]||emptyTeamStats()));
+  const agg = statsList.reduce((a,s)=>({
+    twoM:a.twoM+s.twoM, twoA:a.twoA+s.twoA, threeM:a.threeM+s.threeM, threeA:a.threeA+s.threeA, ftM:a.ftM+s.ftM, ftA:a.ftA+s.ftA
+  }), {twoM:0,twoA:0,threeM:0,threeA:0,ftM:0,ftA:0});
+  const statRows = [
+    ['FG（2P＋3P）', agg.twoM+agg.threeM, agg.twoA+agg.threeA],
+    ['2ポイント（2P）', agg.twoM, agg.twoA],
+    ['3ポイント（3P）', agg.threeM, agg.threeA],
+    ['フリースロー（FT）', agg.ftM, agg.ftA],
+  ].map(([label, m, a])=>`
+    <tr>
+      <td style="text-align:left; font-weight:600;">${label}</td>
+      <td>${a}</td>
+      <td style="color:var(--green); font-weight:700;">${m}</td>
+      <td style="color:var(--orange); font-weight:700;">${pct(m,a)}%</td>
+    </tr>`).join('');
 
   // 選手選択チップ
   const chipList = side==='own' ? players : oppSorted;
@@ -1813,13 +1855,14 @@ function renderShotChart(body, g){
       <span><span class="lg-miss"></span> 失敗（×）</span>
     </div>
     <div class="card" style="padding:14px 16px; margin-top:12px;">
-      <div style="display:flex; justify-content:space-around; text-align:center;">
-        <div><div class="big-num">${att}</div><div class="hint">試投数</div></div>
-        <div><div class="big-num" style="color:var(--green);">${made}</div><div class="hint">成功数</div></div>
-        <div><div class="big-num" style="color:var(--orange);">${fgPct}%</div><div class="hint">成功率</div></div>
+      <div class="boxscore-wrap">
+        <table style="min-width:0; width:100%;">
+          <thead><tr><th style="text-align:left;">項目</th><th>試投数</th><th>成功数</th><th>成功率</th></tr></thead>
+          <tbody>${statRows}</tbody>
+        </table>
       </div>
     </div>
-    <div class="hint" style="margin-top:8px;">シュートは「スタッツ入力」画面でコートをタップして記録します。ここでは記録された結果を確認できます。</div>
+    <div class="hint" style="margin-top:8px;">シュートは「スタッツ入力」画面でコートをタップして記録します。ここでは記録された結果を確認できます。（チャートの○×は位置つきで記録した2P/3Pのみ表示。FTを含む集計は下の表をご覧ください）</div>
   `;
 
   document.getElementById('csOwn').onclick = ()=>{ state.chartSide='own'; render(); };
@@ -2041,9 +2084,9 @@ function renderBoxScore(body, g){
       <td>#${p.number} ${escapeHtml(p.name)}</td>
       <td class="pts-cell">${P}</td>
       <td>${fmtMin(liveSeconds(s))}</td>
-      <td>${s.twoM}/${s.twoA}</td>
-      <td>${s.threeM}/${s.threeA}</td>
-      <td>${s.ftM}/${s.ftA}</td>
+      <td>${s.twoM}/${s.twoA} <small style="color:var(--text-dim);">${pct(s.twoM,s.twoA)}%</small></td>
+      <td>${s.threeM}/${s.threeA} <small style="color:var(--text-dim);">${pct(s.threeM,s.threeA)}%</small></td>
+      <td>${s.ftM}/${s.ftA} <small style="color:var(--text-dim);">${pct(s.ftM,s.ftA)}%</small></td>
       <td>${pct(s.twoM+s.threeM, s.twoA+s.threeA)}%</td>
       <td>${s.oreb}</td>
       <td>${s.dreb}</td>
@@ -2070,9 +2113,9 @@ function renderBoxScore(body, g){
       <td>#${escapeHtml(String(p.number))} ${escapeHtml(p.name||'')}</td>
       <td class="pts-cell">${pts(s)}</td>
       <td>${fmtMin(s.secondsPlayed||0)}</td>
-      <td>${s.twoM}/${s.twoA}</td>
-      <td>${s.threeM}/${s.threeA}</td>
-      <td>${s.ftM}/${s.ftA}</td>
+      <td>${s.twoM}/${s.twoA} <small style="color:var(--text-dim);">${pct(s.twoM,s.twoA)}%</small></td>
+      <td>${s.threeM}/${s.threeA} <small style="color:var(--text-dim);">${pct(s.threeM,s.threeA)}%</small></td>
+      <td>${s.ftM}/${s.ftA} <small style="color:var(--text-dim);">${pct(s.ftM,s.ftA)}%</small></td>
       <td>${pct(s.twoM+s.threeM, s.twoA+s.threeA)}%</td>
       <td>${s.oreb}</td>
       <td>${s.dreb}</td>
@@ -2104,8 +2147,8 @@ function renderBoxScore(body, g){
         <table style="min-width:0;">
           <thead><tr><th>チーム</th><th>PTS</th><th>POSS</th><th>2P</th><th>3P</th><th>FT</th><th>OREB</th><th>DREB</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TOV</th><th>PF</th></tr></thead>
           <tbody>
-            <tr><td>自チーム</td><td class="pts-cell">${teamPts}</td><td>${teamPoss}</td><td>${team2M}/${team2A}</td><td>${team3M}/${team3A}</td><td>${teamFtM}/${teamFtA}</td><td>${teamOreb}</td><td>${teamDreb}</td><td>${teamReb}</td><td>${teamAst}</td><td>${teamStl}</td><td>${teamBlk}</td><td>${teamTov}</td><td>${teamPf}</td></tr>
-            <tr><td>${escapeHtml(g.opponent)}</td><td class="pts-cell">${g.opponentScore||0}</td><td>${oppPoss}</td><td>${os.twoM}/${os.twoA}</td><td>${os.threeM}/${os.threeA}</td><td>${os.ftM}/${os.ftA}</td><td>${os.oreb}</td><td>${os.dreb}</td><td>${oppReb}</td><td>${os.ast}</td><td>${os.stl}</td><td>${os.blk}</td><td>${os.tov}</td><td>${os.pf}</td></tr>
+            <tr><td>自チーム</td><td class="pts-cell">${teamPts}</td><td>${teamPoss}</td><td>${team2M}/${team2A} <small style="color:var(--text-dim);">${pct(team2M,team2A)}%</small></td><td>${team3M}/${team3A} <small style="color:var(--text-dim);">${pct(team3M,team3A)}%</small></td><td>${teamFtM}/${teamFtA} <small style="color:var(--text-dim);">${pct(teamFtM,teamFtA)}%</small></td><td>${teamOreb}</td><td>${teamDreb}</td><td>${teamReb}</td><td>${teamAst}</td><td>${teamStl}</td><td>${teamBlk}</td><td>${teamTov}</td><td>${teamPf}</td></tr>
+            <tr><td>${escapeHtml(g.opponent)}</td><td class="pts-cell">${g.opponentScore||0}</td><td>${oppPoss}</td><td>${os.twoM}/${os.twoA} <small style="color:var(--text-dim);">${pct(os.twoM,os.twoA)}%</small></td><td>${os.threeM}/${os.threeA} <small style="color:var(--text-dim);">${pct(os.threeM,os.threeA)}%</small></td><td>${os.ftM}/${os.ftA} <small style="color:var(--text-dim);">${pct(os.ftM,os.ftA)}%</small></td><td>${os.oreb}</td><td>${os.dreb}</td><td>${oppReb}</td><td>${os.ast}</td><td>${os.stl}</td><td>${os.blk}</td><td>${os.tov}</td><td>${os.pf}</td></tr>
           </tbody>
         </table>
       </div>
@@ -2177,13 +2220,21 @@ function exportScoresheet(g){
   const qScores = {};  // {q:{a,b}}
   const runsA = {}, runsB = {}; // 累積得点 -> {num, q, isFt, isThree}
   const foulsBy = {};  // 'p:id'/'o:id' -> [{q, ft}]
-  const toA = {first:0, second:0, ot:0}, toB = {first:0, second:0, ot:0};
+  // タイムアウト: 区分ごとに「取得時の経過分」を配列で保持
+  const toA = {first:[], second:[], ot:[]}, toB = {first:[], second:[], ot:[]};
+  const qLenSec = g.quarterLengthSec || 600;
   let cumA = 0, cumB = 0;
   (g.log||[]).forEach(e=>{
     const q = e.quarter || 1;
     if(e.timeout){
       const slot = q<=2 ? 'first' : (q<=4 ? 'second' : 'ot');
-      (e.timeout==='own' ? toA : toB)[slot]++;
+      // 経過分 = floor((クォーター長 - 残り秒) / 60)。残り秒不明なら空
+      let mark = '';
+      if(typeof e.clockSec==='number'){
+        const elapsed = Math.max(0, qLenSec - e.clockSec);
+        mark = String(Math.floor(elapsed/60));
+      }
+      (e.timeout==='own' ? toA : toB)[slot].push(mark);
       return;
     }
     const key = e.key || e.oppKey;
@@ -2199,11 +2250,11 @@ function exportScoresheet(g){
     if(isOpp){
       const p = oppSorted.find(x=>x.id===e.oppPlayerId);
       cumB += sc; qScores[q].b += sc;
-      runsB[cumB] = {num: p?String(p.number):'?', q, isFt:key==='ftM', isThree:key==='threeM'};
+      runsB[cumB] = {num: p?String(p.number):'?', q, isFt:key==='ftM', isThree:key==='threeM', _score:cumB};
     } else {
       const p = players.find(x=>x.id===e.playerId);
       cumA += sc; qScores[q].a += sc;
-      runsA[cumA] = {num: p?String(p.number):'?', q, isFt:key==='ftM', isThree:key==='threeM'};
+      runsA[cumA] = {num: p?String(p.number):'?', q, isFt:key==='ftM', isThree:key==='threeM', _score:cumA};
     }
   });
   const played = (s)=> (s.secondsPlayed||0)>0 || pts(s)>0 || (s.twoA+s.threeA+s.ftA+s.oreb+s.dreb+s.ast+s.stl+s.blk+(s.tov||0)+(s.pf||0))>0;
@@ -2291,7 +2342,7 @@ function exportScoresheet(g){
   y = PAD + headerH;
 
   // ===== チームブロック =====
-  function drawTeamBlock(x0, y0, label, name, list, statsOf, foulPrefix, teamFouls, to, grayHead){
+  function drawTeamBlock(x0, y0, label, name, list, statsOf, foulPrefix, teamFouls, to, grayHead, starterSet){
     let yy = y0;
     box(x0, yy, leftW, tbH);
     // チーム名行
@@ -2301,19 +2352,29 @@ function exportScoresheet(g){
     // タイムアウト(左) / チームファウル(右)
     text('タイムアウト', x0+10, yy+10, 'bold 11px Inter, sans-serif', GRAY);
     text('チームファウル', x0+250, yy+10, 'bold 11px Inter, sans-serif', GRAY);
-    const toRow = (lab, n, boxes, ty)=>{
+    // タイムアウト: 取得済みは経過分を記入、未使用は試合終了後のみ二重線で抹消
+    const finished = g.status==='finished';
+    const dblLine = (bx, ty, w, h)=>{
+      ctx.strokeStyle = INK; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(bx+2, ty+h/2-1.5); ctx.lineTo(bx+w-2, ty+h/2-1.5);
+      ctx.moveTo(bx+2, ty+h/2+1.5); ctx.lineTo(bx+w-2, ty+h/2+1.5); ctx.stroke();
+    };
+    const toRow = (lab, marks, boxes, ty)=>{
       let bx = x0+10;
       for(let i=1;i<=boxes;i++){
-        box(bx, ty, 16, 16);
-        if(n>=i) xMark(bx, ty, 16, 16, INK);        // 使用済み: ×
-        else fillLine(bx+2, ty+8, bx+14, INK);       // 未使用: 横線で抹消
-        bx += 18;
+        box(bx, ty, 18, 16);
+        if(marks[i-1]!==undefined){
+          text(marks[i-1]||'✓', bx+9, ty+8, 'bold 11px "JetBrains Mono", monospace', INK, 'center'); // 経過分
+        } else if(finished){
+          dblLine(bx, ty, 18, 16); // 未使用: 二重線
+        }
+        bx += 20;
       }
       text(lab, bx+6, ty+8, '11px Inter, sans-serif');
     };
-    toRow('前半', Math.min(to.first,2), 2, yy+22);
-    toRow('後半', Math.min(to.second,3), 3, yy+42);
-    toRow('オーバータイム(OT)', Math.min(to.ot,1), 1, yy+62);
+    toRow('前半', to.first, 2, yy+22);
+    toRow('後半', to.second, 3, yy+42);
+    toRow('オーバータイム(OT)', to.ot, 1, yy+62);
     // チームファウル 1Q-4Q (2列×2行)
     const tfCell = (q, tx, ty)=>{
       text(q+'Q', tx, ty+8, 'bold 11px Inter, sans-serif');
@@ -2322,7 +2383,8 @@ function exportScoresheet(g){
         const bx = tx+26+(i-1)*20;
         box(bx, ty, 18, 16);
         text(String(i), bx+9, ty+8, '9px Inter, sans-serif', LIGHT, 'center');
-        if(n>=i) xMark(bx, ty, 18, 16, qColor(q));
+        if(n>=i){ xMark(bx, ty, 18, 16, qColor(q)); }
+        else if(finished){ dblLine(bx, ty, 18, 16); } // 未使用: 二重線
       }
     };
     tfCell(1, x0+250, yy+22); tfCell(2, x0+430, yy+22);
@@ -2354,8 +2416,19 @@ function exportScoresheet(g){
         const s = statsOf(p);
         text((p.name||'').slice(0,14), x0+cols[0].w+8, yy+prowH/2, '12px Inter, sans-serif');
         text(String(p.number), x0+cols[0].w+cols[1].w+cols[2].w/2, yy+prowH/2, '700 13px "JetBrains Mono", monospace', INK, 'center');
-        if(played(s)) text('x', x0+cols[0].w+cols[1].w+cols[2].w+cols[3].w/2, yy+prowH/2, '12px Inter, sans-serif', REDQ, 'center');
+        // Player In: スタメンは×の上に○、途中出場は×のみ
+        const pinX = x0+cols[0].w+cols[1].w+cols[2].w+cols[3].w/2;
+        const pinY = yy+prowH/2;
+        if(starterSet && starterSet.has(p.id)){
+          text('x', pinX, pinY, '12px Inter, sans-serif', REDQ, 'center');
+          ctx.strokeStyle = REDQ; ctx.lineWidth = 1.3;
+          ctx.beginPath(); ctx.arc(pinX, pinY, 7, 0, Math.PI*2); ctx.stroke(); ctx.lineWidth = 1;
+        } else if(played(s)){
+          text('x', pinX, pinY, '12px Inter, sans-serif', REDQ, 'center');
+        }
         const fouls = foulsBy[foulPrefix+p.id] || [];
+        // 前半(Q1-2)のファウル数 → その右端に前後半区切りの黒線
+        const firstHalfCount = fouls.filter(fo=>fo.q<=2).length;
         for(let f=0; f<5; f++){
           const fx = foulStartX + f*foulColW;
           if(f < fouls.length){
@@ -2363,11 +2436,17 @@ function exportScoresheet(g){
             const col = qColor(fo.q);
             const label = 'P'+(fo.ft!=null && fo.ft>0 ? fo.ft : '');
             text(label, fx+foulColW/2, yy+prowH/2, 'bold 11px Inter, sans-serif', col, 'center');
-          } else {
-            // 未使用のファウルマスは斜線で抹消
+          } else if(finished){
+            // 試合終了後、未使用のファウルマスは斜線で抹消
             ctx.strokeStyle = LIGHT;
             ctx.beginPath(); ctx.moveTo(fx+3, yy+prowH-3); ctx.lineTo(fx+foulColW-3, yy+3); ctx.stroke();
           }
+        }
+        // 前後半の境目に太い黒線（前半のファウルがある場合のみ、その右端に）
+        if(firstHalfCount>0 && firstHalfCount<5){
+          const lx = foulStartX + firstHalfCount*foulColW;
+          ctx.strokeStyle = INK; ctx.lineWidth = 2.4;
+          ctx.beginPath(); ctx.moveTo(lx, yy+2); ctx.lineTo(lx, yy+prowH-2); ctx.stroke(); ctx.lineWidth = 1;
         }
       } else {
         // 登録のない空行は行全体（選手名〜ファウル）に斜線
@@ -2386,8 +2465,10 @@ function exportScoresheet(g){
     return yy;
   }
 
-  drawTeamBlock(PAD, y, 'チームA', teamAName, players, p=>g.stats[p.id], 'p:', g.teamFoulsByQuarter||{}, toA, false);
-  drawTeamBlock(PAD, y+tbH+14, 'チームB', teamBName, oppSorted, p=>(g.oppPlayerStats[p.id]||emptyTeamStats()), 'o:', g.oppFoulsByQuarter||{}, toB, true);
+  const startersOwn = new Set((g.starters&&g.starters.own)||[]);
+  const startersOpp = new Set((g.starters&&g.starters.opp)||[]);
+  drawTeamBlock(PAD, y, 'チームA', teamAName, players, p=>g.stats[p.id], 'p:', g.teamFoulsByQuarter||{}, toA, false, startersOwn);
+  drawTeamBlock(PAD, y+tbH+14, 'チームB', teamBName, oppSorted, p=>(g.oppPlayerStats[p.id]||emptyTeamStats()), 'o:', g.oppFoulsByQuarter||{}, toB, true, startersOpp);
 
   // 署名欄(左下)
   let sy = y + tbH*2 + 14 + 18;
@@ -2404,6 +2485,14 @@ function exportScoresheet(g){
   let ry = y;
   text('ランニングスコア', rightX, ry+8, 'bold 14px Inter, sans-serif');
   ry += 24;
+  // 各クォーター終了時点の累計得点（その得点セルの下に区切り線を引く）
+  const pEndA = {}, pEndB = {};
+  { let ca=0, cb=0;
+    for(let q=1; q<=Math.max(4, ...Object.keys(qScores).map(Number), 4); q++){
+      ca += (qScores[q]?qScores[q].a:0); cb += (qScores[q]?qScores[q].b:0);
+      if(ca>0) pEndA[ca]=true; if(cb>0) pEndB[cb]=true;
+    }
+  }
   const nBlocks = 4;
   const blockGap = 10;
   const blockW = (rightW - blockGap*(nBlocks-1)) / nBlocks;
@@ -2430,27 +2519,34 @@ function exportScoresheet(g){
       const drawSide = (run, scorerCell, scoreCell)=>{
         if(!run) return;
         const col = qColor(run.q);
-        // 得点セルに斜線
-        ctx.strokeStyle = col; ctx.lineWidth = 1.3;
-        ctx.beginPath();
-        ctx.moveTo(scoreCell.x+2, cy+runRowH-2);
-        ctx.lineTo(scoreCell.x+scoreCell.w-2, cy+2);
-        ctx.stroke();
-        ctx.lineWidth = 1;
-        // 得点者番号（3Pは○囲み、FTは番号左に黒点）
+        const scNumX = scoreCell.x+scoreCell.w/2, scNumY = cy+runRowH/2;
+        if(run.isFt){
+          // フリースロー成功: 得点数字を丸で囲んで塗り（公式ルール）
+          ctx.fillStyle = col;
+          ctx.beginPath(); ctx.arc(scNumX, scNumY, 7.5, 0, Math.PI*2); ctx.fill();
+          text(String(run._score), scNumX, scNumY, '9px "JetBrains Mono", monospace', '#fff', 'center');
+        } else {
+          // 通常得点: 得点数字に斜線
+          ctx.strokeStyle = col; ctx.lineWidth = 1.3;
+          ctx.beginPath();
+          ctx.moveTo(scoreCell.x+2, cy+runRowH-2);
+          ctx.lineTo(scoreCell.x+scoreCell.w-2, cy+2);
+          ctx.stroke();
+          ctx.lineWidth = 1;
+        }
+        // 得点者番号（3Pは○囲み）
         const nx = scorerCell.x+scorerCell.w/2;
         text(run.num, nx, cy+runRowH/2, 'bold 10.5px "JetBrains Mono", monospace', col, 'center');
         if(run.isThree){
           ctx.strokeStyle = col;
           ctx.beginPath(); ctx.arc(nx, cy+runRowH/2, 8, 0, Math.PI*2); ctx.stroke();
         }
-        if(run.isFt){
-          ctx.fillStyle = col;
-          ctx.beginPath(); ctx.arc(scorerCell.x+4, cy+runRowH/2, 1.8, 0, Math.PI*2); ctx.fill();
-        }
       };
       drawSide(runsA[score], cells[0], cells[1]);
       drawSide(runsB[score], cells[3], cells[2]);
+      // ピリオド区切り線: このスコアが各Q終了時点の累計と一致したら、そのセルの下辺に太線
+      if(pEndA[score]){ ctx.strokeStyle=INK; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cells[1].x, cy+runRowH); ctx.lineTo(cells[1].x+cells[1].w, cy+runRowH); ctx.stroke(); ctx.lineWidth=1; }
+      if(pEndB[score]){ ctx.strokeStyle=INK; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cells[2].x, cy+runRowH); ctx.lineTo(cells[2].x+cells[2].w, cy+runRowH); ctx.stroke(); ctx.lineWidth=1; }
     }
     box(bx, ry, blockW, 18+RUN_ROWS*runRowH);
   }
